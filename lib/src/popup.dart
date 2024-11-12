@@ -195,7 +195,6 @@ class _PopupRoute extends PopupRoute<void> {
   _PopupRoute({
     RouteSettings? settings,
     ImageFilter? filter,
-    TraversalEdgeBehavior? traversalEdgeBehavior,
     required this.child,
     required this.targetRect,
     this.backgroundColor,
@@ -207,8 +206,7 @@ class _PopupRoute extends PopupRoute<void> {
     this.contentDecoration,
   }) : super(
           settings: settings,
-          filter: filter,
-          traversalEdgeBehavior: traversalEdgeBehavior,
+          filter: filter
         );
 
   @override

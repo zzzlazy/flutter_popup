@@ -31,6 +31,7 @@ class CustomPopup extends StatelessWidget {
     this.contentRadius,
     this.contentDecoration,
     this.onBeforePopup,
+    this.onAfterPopup,
   });
 
   void _show(BuildContext context) async {

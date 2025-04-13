@@ -15,6 +15,7 @@ class CustomPopup extends StatelessWidget {
   final double? contentRadius;
   final BoxDecoration? contentDecoration;
   final VoidCallback? onBeforePopup;
+  final VoidCallback? onAfterPopup;
 
   const CustomPopup({
     super.key,
@@ -32,7 +33,7 @@ class CustomPopup extends StatelessWidget {
     this.onBeforePopup,
   });
 
-  void _show(BuildContext context) {
+  void _show(BuildContext context) async {
     final anchor = anchorKey?.currentContext ?? context;
     final renderBox = anchor.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
@@ -40,7 +41,7 @@ class CustomPopup extends StatelessWidget {
 
     onBeforePopup?.call();
 
-    Navigator.of(context).push(
+    await Navigator.of(context).push(
       _PopupRoute(
         targetRect: offset & renderBox.paintBounds.size,
         backgroundColor: backgroundColor,
@@ -53,6 +54,8 @@ class CustomPopup extends StatelessWidget {
         child: content,
       ),
     );
+
+    onAfterPopup?.call();
   }
 
   @override
@@ -106,7 +109,8 @@ class _PopupContent extends StatelessWidget {
             bottom: arrowDirection == _ArrowDirection.top ? 0 : null,
           ),
           constraints: const BoxConstraints(minWidth: 50),
-          decoration: contentDecoration ??
+          decoration:
+              contentDecoration ??
               BoxDecoration(
                 color: backgroundColor ?? Colors.white,
                 borderRadius: BorderRadius.circular(contentRadius ?? 10),
@@ -150,14 +154,32 @@ class _TrianglePainter extends CustomPainter {
     paint.color = color;
 
     path.lineTo(size.width * 0.66, size.height * 0.86);
-    path.cubicTo(size.width * 0.58, size.height * 1.05, size.width * 0.42,
-        size.height * 1.05, size.width * 0.34, size.height * 0.86);
+    path.cubicTo(
+      size.width * 0.58,
+      size.height * 1.05,
+      size.width * 0.42,
+      size.height * 1.05,
+      size.width * 0.34,
+      size.height * 0.86,
+    );
     path.cubicTo(size.width * 0.34, size.height * 0.86, 0, 0, 0, 0);
     path.cubicTo(0, 0, size.width, 0, size.width, 0);
-    path.cubicTo(size.width, 0, size.width * 0.66, size.height * 0.86,
-        size.width * 0.66, size.height * 0.86);
-    path.cubicTo(size.width * 0.66, size.height * 0.86, size.width * 0.66,
-        size.height * 0.86, size.width * 0.66, size.height * 0.86);
+    path.cubicTo(
+      size.width,
+      0,
+      size.width * 0.66,
+      size.height * 0.86,
+      size.width * 0.66,
+      size.height * 0.86,
+    );
+    path.cubicTo(
+      size.width * 0.66,
+      size.height * 0.86,
+      size.width * 0.66,
+      size.height * 0.86,
+      size.width * 0.66,
+      size.height * 0.86,
+    );
     canvas.drawPath(path, paint);
   }
 
@@ -213,10 +235,10 @@ class _PopupRoute extends PopupRoute<void> {
     this.contentRadius,
     this.contentDecoration,
   }) : super(
-          settings: settings,
-          filter: filter,
-          traversalEdgeBehavior: traversalEdgeBehavior,
-        );
+         settings: settings,
+         filter: filter,
+         traversalEdgeBehavior: traversalEdgeBehavior,
+       );
 
   @override
   Color? get barrierColor => barriersColor ?? Colors.black.withOpacity(0.1);
